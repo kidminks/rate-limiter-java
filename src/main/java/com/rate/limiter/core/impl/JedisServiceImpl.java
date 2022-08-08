@@ -18,7 +18,7 @@ public class JedisServiceImpl implements JedisService {
         this.redisDb = redisDb;
     }
 
-    public JedisPool getJedisPool() {
+    private JedisPool getJedisPool() {
         if (Objects.isNull(jedisPool)) {
             synchronized (JedisService.class) {
                 if (Objects.isNull(jedisPool)) {
