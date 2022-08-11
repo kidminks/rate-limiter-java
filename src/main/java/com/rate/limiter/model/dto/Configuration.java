@@ -14,4 +14,6 @@ public class Configuration {
     private Integer redisDb;
 
     private RateLimiterType limiterType = RateLimiterType.SLIDING_WINDOW;
+
+    private Boolean handleLimitDetails = Boolean.FALSE;
 }
