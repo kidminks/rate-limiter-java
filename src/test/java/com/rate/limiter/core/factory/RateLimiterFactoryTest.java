@@ -9,7 +9,7 @@ import org.junit.Test;
 
 public class RateLimiterFactoryTest {
 
-    private Configuration configuration = new Configuration("",6435,1, 1,1,
+    private Configuration configuration = new Configuration("localhost",6379,1,150,50,
             RateLimiterType.SLIDING_WINDOW, Boolean.FALSE);
 
     @Test

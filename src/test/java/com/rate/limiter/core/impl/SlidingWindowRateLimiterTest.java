@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class SlidingWindowRateLimiterTest {
 
-    private Configuration configuration = new Configuration("localhost",6379,1,100,50,
+    private Configuration configuration = new Configuration("localhost",6379,1,150,50,
             RateLimiterType.SLIDING_WINDOW, Boolean.FALSE);
 
     /**

@@ -1,6 +1,7 @@
 package com.rate.limiter.core.impl;
 
 import com.rate.limiter.core.abst.AbstractRateLimiter;
+import com.rate.limiter.core.errors.UnProcessableError;
 import com.rate.limiter.model.dto.Configuration;
 import com.rate.limiter.model.dto.LimitDetails;
 import com.rate.limiter.utils.LimitDetailsConstants;
@@ -29,6 +30,10 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
      */
     @Override
     protected Boolean isLimitLeft(@Valid LimitDetails limitDetails) {
+        if (limitDetails.getMaxRequest() >= LimitDetailsConstants.MAX_REQUEST_SLIDING_WINDOW_LIMIT) {
+            throw new UnProcessableError("large max request which should be less than " +
+                    LimitDetailsConstants.MAX_REQUEST_SLIDING_WINDOW_LIMIT);
+        }
         List<String> keys = Collections.singletonList(limitDetails.getId());
         long keyExpiry = (limitDetails.getWindow() / 1000) + 2;
         List<String> args = Arrays.asList(limitDetails.getMaxRequest().toString(),

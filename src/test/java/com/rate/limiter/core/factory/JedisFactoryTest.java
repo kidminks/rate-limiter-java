@@ -9,7 +9,10 @@ import redis.clients.jedis.JedisPoolConfig;
 public class JedisFactoryTest {
     @Test
     public void testJedisFactory() {
-        JedisService jedisService = JedisFactory.getJedisService("", 6790,  0, new JedisPoolConfig());
+        JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+        jedisPoolConfig.setMaxTotal(150);
+        jedisPoolConfig.setMaxIdle(50);
+        JedisService jedisService = JedisFactory.getJedisService("localhost", 6379,  1, jedisPoolConfig);
         Assert.assertEquals(JedisServiceImpl.class, jedisService.getClass());
     }
 }
