@@ -39,7 +39,7 @@ public class JedisServiceImpl implements JedisService {
      */
     @Override
     public void setHashSet(String key, HashMap<String, String> data) {
-        Jedis jedis = jedisPool.getResource();
+        Jedis jedis = getJedisPool().getResource();
         jedis.hmset(key, data);
     }
 
@@ -50,7 +50,7 @@ public class JedisServiceImpl implements JedisService {
      */
     @Override
     public HashMap<String, String> getHashSet(String key) {
-        Jedis jedis = jedisPool.getResource();
+        Jedis jedis = getJedisPool().getResource();
         return (HashMap<String, String>) jedis.hgetAll(key);
     }
 
@@ -64,7 +64,7 @@ public class JedisServiceImpl implements JedisService {
      */
     @Override
     public String runLua(String lua, List<String> keys, List<String> args) {
-        Jedis jedis = jedisPool.getResource();
+        Jedis jedis = getJedisPool().getResource();
         String luaSHA = jedis.scriptLoad(lua);
         jedis.eval(luaSHA, keys, args);
         return null;
