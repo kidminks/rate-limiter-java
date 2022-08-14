@@ -6,6 +6,7 @@ import com.rate.limiter.core.inter.JedisService;
 import com.rate.limiter.model.dto.Configuration;
 import com.rate.limiter.model.dto.LimitDetails;
 
+import javax.validation.Valid;
 import java.util.Objects;
 
 public abstract class AbstractRateLimiter {
@@ -25,7 +26,7 @@ public abstract class AbstractRateLimiter {
       return jedisService;
    }
 
-   public Boolean check(LimitDetails limitDetails) {
+   public Boolean check(@Valid LimitDetails limitDetails) {
        return isLimitLeft(limitDetails);
    }
 }
