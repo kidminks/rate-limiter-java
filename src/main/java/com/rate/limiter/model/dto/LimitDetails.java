@@ -14,9 +14,9 @@ public class LimitDetails {
     String id;
 
     @NotNull
-    Long limit;
+    Long maxRequest;
 
     @NotNull
-    Long time;
+    Long window;
 
 }

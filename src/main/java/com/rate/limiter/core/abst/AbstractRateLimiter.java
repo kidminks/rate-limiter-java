@@ -4,15 +4,12 @@ import com.rate.limiter.core.errors.ObjectNotFoundError;
 import com.rate.limiter.core.factory.JedisFactory;
 import com.rate.limiter.core.inter.JedisService;
 import com.rate.limiter.model.dto.Configuration;
+import com.rate.limiter.model.dto.LimitDetails;
 
 import java.util.Objects;
 
 public abstract class AbstractRateLimiter {
-   protected abstract Boolean isLimitLeft(String id);
-   protected abstract void resetLimit(String id);
-   protected abstract void forceLimit(String id);
-   protected abstract void disAllowFor(String id);
-   protected abstract void skipFor(String id);
+   protected abstract Boolean isLimitLeft(LimitDetails limitDetails);
 
    private final JedisService jedisService;
 
@@ -28,7 +25,7 @@ public abstract class AbstractRateLimiter {
       return jedisService;
    }
 
-   public Boolean check(String id) {
-       return isLimitLeft(id);
+   public Boolean check(LimitDetails limitDetails) {
+       return isLimitLeft(limitDetails);
    }
 }

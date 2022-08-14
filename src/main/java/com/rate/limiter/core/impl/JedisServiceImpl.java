@@ -1,8 +1,11 @@
 package com.rate.limiter.core.impl;
 
 import com.rate.limiter.core.inter.JedisService;
+import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Objects;
 
 public class JedisServiceImpl implements JedisService {
@@ -27,5 +30,25 @@ public class JedisServiceImpl implements JedisService {
             }
         }
         return this.jedisPool;
+    }
+
+    @Override
+    public void setHashSet(String key, HashMap<String, String> data) {
+        Jedis jedis = jedisPool.getResource();
+        jedis.hmset(key, data);
+    }
+
+    @Override
+    public HashMap<String, String> getHashSet(String key) {
+        Jedis jedis = jedisPool.getResource();
+        return (HashMap<String, String>) jedis.hgetAll(key);
+    }
+
+    @Override
+    public String runLua(String lua, List<String> keys, List<String> args) {
+        Jedis jedis = jedisPool.getResource();
+        String luaSHA = jedis.scriptLoad(lua);
+        jedis.eval(luaSHA, keys, args);
+        return null;
     }
 }
