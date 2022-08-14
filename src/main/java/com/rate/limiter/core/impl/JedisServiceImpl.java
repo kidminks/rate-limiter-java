@@ -3,6 +3,7 @@ package com.rate.limiter.core.impl;
 import com.rate.limiter.core.inter.JedisService;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,44 +15,24 @@ public class JedisServiceImpl implements JedisService {
     private final Integer redisPort;
     private final Integer redisDb;
     private JedisPool jedisPool;
+    private JedisPoolConfig jedisPoolConfig;
 
-    public JedisServiceImpl(String redisHost, Integer redisPort, Integer redisDb) {
+    public JedisServiceImpl(String redisHost, Integer redisPort, Integer redisDb, JedisPoolConfig jedisPoolConfig) {
         this.redisHost = redisHost;
         this.redisPort = redisPort;
         this.redisDb = redisDb;
+        this.jedisPoolConfig = jedisPoolConfig;
     }
 
     private JedisPool getJedisPool() {
         if (Objects.isNull(jedisPool)) {
             synchronized (JedisService.class) {
                 if (Objects.isNull(jedisPool)) {
-                    this.jedisPool = new JedisPool(redisHost, redisPort);
+                    this.jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort);
                 }
             }
         }
         return this.jedisPool;
-    }
-
-    /**
-     * creating hashset in redis (HMSET)
-     * @param key
-     * @param data
-     */
-    @Override
-    public void setHashSet(String key, HashMap<String, String> data) {
-        Jedis jedis = jedisPool.getResource();
-        jedis.hmset(key, data);
-    }
-
-    /**
-     * getting hashset from redis (HGETALL)
-     * @param key
-     * @return
-     */
-    @Override
-    public HashMap<String, String> getHashSet(String key) {
-        Jedis jedis = jedisPool.getResource();
-        return (HashMap<String, String>) jedis.hgetAll(key);
     }
 
     /**
@@ -64,9 +45,10 @@ public class JedisServiceImpl implements JedisService {
      */
     @Override
     public String runLua(String lua, List<String> keys, List<String> args) {
-        Jedis jedis = jedisPool.getResource();
-        String luaSHA = jedis.scriptLoad(lua);
-        jedis.eval(luaSHA, keys, args);
-        return null;
+        Jedis jedis = getJedisPool().getResource();
+        jedis.select(redisDb);
+        String data = jedis.eval(lua, keys, args).toString();
+        jedis.close();
+        return data;
     }
 }
