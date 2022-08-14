@@ -10,6 +10,11 @@ import javax.validation.Valid;
 import java.util.Objects;
 
 public abstract class AbstractRateLimiter {
+   /**
+    * Check if api limit is available for the id provided in limit details
+    * @param limitDetails
+    * @return
+    */
    protected abstract Boolean isLimitLeft(LimitDetails limitDetails);
 
    private final JedisService jedisService;
@@ -26,6 +31,12 @@ public abstract class AbstractRateLimiter {
       return jedisService;
    }
 
+   /**
+    * This function can be called by all the child methods which inturns
+    * calculate the limit and returns the data
+    * @param limitDetails
+    * @return
+    */
    public Boolean check(@Valid LimitDetails limitDetails) {
        return isLimitLeft(limitDetails);
    }

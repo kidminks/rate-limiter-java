@@ -23,6 +23,10 @@ public class RateLimitConfigurationImpl implements RateLimitConfiguration {
         initJedis();
     }
 
+    /**
+     * Configuring jedis and rate limiter type
+     * @param configuration
+     */
     @Override
     public void configureRateLimiter(Configuration configuration) {
         this.configuration = configuration;

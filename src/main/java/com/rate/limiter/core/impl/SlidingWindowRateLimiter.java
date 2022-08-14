@@ -20,6 +20,13 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
         super(configuration);
     }
 
+    /**
+     * SlidingWindowRateLimiter will store all the access in redis set with currentTime as score
+     * it deletes all the old time so that we can get exact numbers of request user had made in (current_time - window)
+     * it adds the new time to set if the request is success
+     * @param limitDetails
+     * @return
+     */
     @Override
     protected Boolean isLimitLeft(@Valid LimitDetails limitDetails) {
         List<String> keys = Collections.singletonList(limitDetails.getId());

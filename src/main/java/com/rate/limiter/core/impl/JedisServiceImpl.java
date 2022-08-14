@@ -32,18 +32,36 @@ public class JedisServiceImpl implements JedisService {
         return this.jedisPool;
     }
 
+    /**
+     * creating hashset in redis (HMSET)
+     * @param key
+     * @param data
+     */
     @Override
     public void setHashSet(String key, HashMap<String, String> data) {
         Jedis jedis = jedisPool.getResource();
         jedis.hmset(key, data);
     }
 
+    /**
+     * getting hashset from redis (HGETALL)
+     * @param key
+     * @return
+     */
     @Override
     public HashMap<String, String> getHashSet(String key) {
         Jedis jedis = jedisPool.getResource();
         return (HashMap<String, String>) jedis.hgetAll(key);
     }
 
+    /**
+     * Function to run lua script and provide response from redis
+     * this is done to avoid multiple call made to redis in case we need to check multiple things
+     * @param lua
+     * @param keys
+     * @param args
+     * @return
+     */
     @Override
     public String runLua(String lua, List<String> keys, List<String> args) {
         Jedis jedis = jedisPool.getResource();
