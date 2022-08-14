@@ -30,7 +30,9 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
     @Override
     protected Boolean isLimitLeft(@Valid LimitDetails limitDetails) {
         List<String> keys = Collections.singletonList(limitDetails.getId());
-        List<String> args = Arrays.asList(limitDetails.getMaxRequest().toString(), limitDetails.getWindow().toString());
+        long keyExpiry = (limitDetails.getWindow() / 1000) + 2;
+        List<String> args = Arrays.asList(limitDetails.getMaxRequest().toString(),
+                limitDetails.getWindow().toString(), Long.toString(keyExpiry));
         String resp = getJedisService().runLua(LuaScripts.slidingRateLimiter(), keys, args);
         return resp.equals(LimitDetailsConstants.REDIS_LIMIT_SUCCESS);
     }

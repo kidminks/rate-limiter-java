@@ -12,6 +12,8 @@ public class Configuration {
     private String redisHost;
     private Integer redisPort;
     private Integer redisDb;
+    private Integer maxTotal;
+    private Integer maxIdle;
 
     private RateLimiterType limiterType = RateLimiterType.SLIDING_WINDOW;
 

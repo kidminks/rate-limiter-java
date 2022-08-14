@@ -5,6 +5,7 @@ import com.rate.limiter.core.factory.JedisFactory;
 import com.rate.limiter.core.inter.JedisService;
 import com.rate.limiter.model.dto.Configuration;
 import com.rate.limiter.model.dto.LimitDetails;
+import redis.clients.jedis.JedisPoolConfig;
 
 import javax.validation.Valid;
 import java.util.Objects;
@@ -20,8 +21,11 @@ public abstract class AbstractRateLimiter {
    private final JedisService jedisService;
 
    protected AbstractRateLimiter(Configuration configuration) {
+      JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
+      jedisPoolConfig.setMaxTotal(configuration.getMaxTotal());
+      jedisPoolConfig.setMaxIdle(configuration.getMaxIdle());
       this.jedisService = JedisFactory.getJedisService(configuration.getRedisHost(),
-              configuration.getRedisPort(), configuration.getRedisDb());
+              configuration.getRedisPort(), configuration.getRedisDb(), jedisPoolConfig);
    }
 
    protected JedisService getJedisService() {

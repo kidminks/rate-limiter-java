@@ -3,6 +3,7 @@ package com.rate.limiter.core.impl;
 import com.rate.limiter.core.inter.JedisService;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.JedisPoolConfig;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,18 +15,20 @@ public class JedisServiceImpl implements JedisService {
     private final Integer redisPort;
     private final Integer redisDb;
     private JedisPool jedisPool;
+    private JedisPoolConfig jedisPoolConfig;
 
-    public JedisServiceImpl(String redisHost, Integer redisPort, Integer redisDb) {
+    public JedisServiceImpl(String redisHost, Integer redisPort, Integer redisDb, JedisPoolConfig jedisPoolConfig) {
         this.redisHost = redisHost;
         this.redisPort = redisPort;
         this.redisDb = redisDb;
+        this.jedisPoolConfig = jedisPoolConfig;
     }
 
     private JedisPool getJedisPool() {
         if (Objects.isNull(jedisPool)) {
             synchronized (JedisService.class) {
                 if (Objects.isNull(jedisPool)) {
-                    this.jedisPool = new JedisPool(redisHost, redisPort);
+                    this.jedisPool = new JedisPool(jedisPoolConfig, redisHost, redisPort);
                 }
             }
         }
@@ -40,6 +43,7 @@ public class JedisServiceImpl implements JedisService {
     @Override
     public void setHashSet(String key, HashMap<String, String> data) {
         Jedis jedis = getJedisPool().getResource();
+        jedis.select(redisDb);
         jedis.hmset(key, data);
     }
 
@@ -51,6 +55,7 @@ public class JedisServiceImpl implements JedisService {
     @Override
     public HashMap<String, String> getHashSet(String key) {
         Jedis jedis = getJedisPool().getResource();
+        jedis.select(redisDb);
         return (HashMap<String, String>) jedis.hgetAll(key);
     }
 
@@ -65,8 +70,7 @@ public class JedisServiceImpl implements JedisService {
     @Override
     public String runLua(String lua, List<String> keys, List<String> args) {
         Jedis jedis = getJedisPool().getResource();
-        String luaSHA = jedis.scriptLoad(lua);
-        jedis.eval(luaSHA, keys, args);
-        return null;
+        jedis.select(redisDb);
+        return jedis.eval(lua, keys, args).toString();
     }
 }
