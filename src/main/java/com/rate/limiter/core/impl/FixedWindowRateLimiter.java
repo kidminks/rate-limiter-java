@@ -15,13 +15,16 @@ public class FixedWindowRateLimiter extends AbstractRateLimiter {
         super(configuration);
     }
 
+    /**
+     * fixed rate limiter the entry is set on the first api hit and a window is given so if we want user to
+     * use 100 request in one one hour he can use all in 59th minute and other hundred in 1 minute of next hour
+     * @param limitDetails
+     * @return
+     */
     @Override
     protected Boolean isLimitLeft(@Valid LimitDetails limitDetails) {
         Long request = getJedisService().increment(limitDetails.getId(), limitDetails.getWindow());
-        if (request <= limitDetails.getMaxRequest()) {
-            return true;
-        }
-        return false;
+        return request <= limitDetails.getMaxRequest();
     }
 
     public static FixedWindowRateLimiter getFixedWindowRateLimiter(Configuration configuration) {
