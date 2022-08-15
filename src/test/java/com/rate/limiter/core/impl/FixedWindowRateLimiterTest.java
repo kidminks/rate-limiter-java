@@ -14,31 +14,23 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @Slf4j
-public class SlidingWindowRateLimiterTest {
-
+public class FixedWindowRateLimiterTest {
     private Configuration configuration = new Configuration("localhost",6379,1,150,50);
 
-    /**
-     * Required local redis to test the flow completely
-     * mocking is not being done because it is integral part and is based on scripts which will run in redis
-     */
     @Test
-    public void testSlidingWindowClass() {
-        AbstractRateLimiter abstractRateLimiter = RateLimiterFactory.getRateLimiter(configuration, RateLimiterType.SLIDING_WINDOW);
-        LimitDetails limitDetails = new LimitDetails("test-sliding-1", 1L, 10000L);
+    public void testFixedWindowClass() {
+        AbstractRateLimiter abstractRateLimiter = RateLimiterFactory.getRateLimiter(configuration, RateLimiterType.FIXED_WINDOW);
+        LimitDetails limitDetails = new LimitDetails("test-fixed-1", 1L, 10000L);
         Boolean isLimitAvailable = abstractRateLimiter.check(limitDetails);
         Assert.assertEquals(isLimitAvailable, true);
         isLimitAvailable = abstractRateLimiter.check(limitDetails);
         Assert.assertEquals(isLimitAvailable, false);
     }
 
-    /**
-     * Async call allow only specific
-     */
     @Test
-    public void testSlidingWindowAsyncFunctionality() {
-        AbstractRateLimiter abstractRateLimiter = RateLimiterFactory.getRateLimiter(configuration, RateLimiterType.SLIDING_WINDOW);
-        LimitDetails limitDetails = new LimitDetails("test-sliding-async-1", 50L, 60000L);
+    public void testFixedWindowAsyncFunctionality() {
+        AbstractRateLimiter abstractRateLimiter = RateLimiterFactory.getRateLimiter(configuration, RateLimiterType.FIXED_WINDOW);
+        LimitDetails limitDetails = new LimitDetails("test-fixed-async-1", 50L, 60000L);
         List<CompletableFuture<Boolean>> completableFutures = new ArrayList<>();
         for(int i=0;i<100;i++) {
             CompletableFuture<Boolean> futureTask = CompletableFuture.supplyAsync(() -> abstractRateLimiter.check(limitDetails));

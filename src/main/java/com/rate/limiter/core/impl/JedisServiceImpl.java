@@ -51,4 +51,16 @@ public class JedisServiceImpl implements JedisService {
         jedis.close();
         return data;
     }
+
+    @Override
+    public Long increment(String key, Long window) {
+        Jedis jedis = getJedisPool().getResource();
+        jedis.select(redisDb);
+        Long data = jedis.incr(key);
+        if (data.equals(1L)) {
+            jedis.expire(key, window/1000);
+        }
+        jedis.close();
+        return data;
+    }
 }
