@@ -1,6 +1,5 @@
 package com.rate.limiter.model.dto;
 
-import com.rate.limiter.model.enums.RateLimiterType;
 import lombok.*;
 
 @Getter
@@ -14,8 +13,4 @@ public class Configuration {
     private Integer redisDb;
     private Integer maxTotal;
     private Integer maxIdle;
-
-    private RateLimiterType limiterType = RateLimiterType.SLIDING_WINDOW;
-
-    private Boolean handleLimitDetails = Boolean.FALSE;
 }
