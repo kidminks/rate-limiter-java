@@ -32,7 +32,7 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
             throw new UnProcessableError("large max request which should be less than " +
                     LimitDetailsConstants.MAX_REQUEST_SLIDING_WINDOW_LIMIT);
         }
-        List<String> keys = Collections.singletonList(limitDetails.getKey());
+        List<String> keys = Collections.singletonList(limitDetails.getLimitKey());
         long keyExpiry = (limitDetails.getWindow() / 1000) + 2;
         List<String> args = Arrays.asList(limitDetails.getMaxRequest().toString(),
                 limitDetails.getWindow().toString(), Long.toString(keyExpiry));

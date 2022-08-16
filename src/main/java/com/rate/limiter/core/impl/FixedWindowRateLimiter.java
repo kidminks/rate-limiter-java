@@ -29,7 +29,7 @@ public class FixedWindowRateLimiter extends AbstractRateLimiter {
      */
     @Override
     protected Boolean isLimitLeft(@Valid LimitDetails limitDetails) {
-        Long request = getJedisService().increment(limitDetails.getKey(), limitDetails.getWindow());
+        Long request = getJedisService().increment(limitDetails.getLimitKey(), limitDetails.getWindow());
         return request <= limitDetails.getMaxRequest();
     }
 
