@@ -4,9 +4,8 @@ import com.rate.limiter.core.errors.ObjectNotFoundError;
 import com.rate.limiter.core.factory.JedisFactory;
 import com.rate.limiter.core.inter.JedisService;
 import com.rate.limiter.model.dto.Configuration;
-import com.rate.limiter.model.dto.KeyDetails;
 import com.rate.limiter.model.dto.LimitDetails;
-import com.rate.limiter.utils.KeyDetailsConstants;
+import com.rate.limiter.utils.LimitDetailsConstants;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.validation.Valid;
@@ -45,14 +44,14 @@ public abstract class AbstractRateLimiter {
 
    /**
     * Setting key details in cache to be accessed later
-    * @param keyDetails
+    * @param limitDetails
     */
-   public void setKeyDetails(@Valid KeyDetails keyDetails) {
+   public void setLimitDetails(@Valid LimitDetails limitDetails) {
       HashMap<String, String> data = new HashMap<>();
-      data.put(KeyDetailsConstants.KEY, keyDetails.getKey());
-      data.put(KeyDetailsConstants.WINDOW, Long.toString(keyDetails.getWindow()));
-      data.put(KeyDetailsConstants.MAX_REQUEST, Long.toString(keyDetails.getMaxRequest()));
-      getJedisService().hashSet(keyDetails.getKey(), data);
+      data.put(LimitDetailsConstants.KEY, limitDetails.getKey());
+      data.put(LimitDetailsConstants.WINDOW, Long.toString(limitDetails.getWindow()));
+      data.put(LimitDetailsConstants.MAX_REQUEST, Long.toString(limitDetails.getMaxRequest()));
+      getJedisService().hashSet(limitDetails.getKey(), data);
    }
 
    /**
@@ -60,9 +59,9 @@ public abstract class AbstractRateLimiter {
     * @param key
     * @return
     */
-   public KeyDetails getKeyDetails(String key) {
+   public LimitDetails getLimitDetails(String key) {
       HashMap<String, String> data = getJedisService().getHash(key);
-      return new KeyDetails(data);
+      return new LimitDetails(data);
    }
 
    /**
@@ -94,11 +93,11 @@ public abstract class AbstractRateLimiter {
 
    /**
     * store and check this can be used to fill key details in data source if its not present
-    * @param keyDetails
+    * @param limitDetails
     * @return
     */
-   public Boolean storeAndCheck(@Valid KeyDetails keyDetails) {
-      setKeyDetails(keyDetails);
-      return check(keyDetails.getKey());
+   public Boolean storeAndCheck(@Valid LimitDetails limitDetails) {
+      setLimitDetails(limitDetails);
+      return check(limitDetails.getKey());
    }
 }

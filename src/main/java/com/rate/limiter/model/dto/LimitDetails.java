@@ -1,8 +1,10 @@
 package com.rate.limiter.model.dto;
 
+import com.rate.limiter.utils.LimitDetailsConstants;
 import lombok.*;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 
 @Getter
 @Setter
@@ -11,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 public class LimitDetails {
     @NotNull
-    String id;
+    String key;
 
     @NotNull
     Long maxRequest;
@@ -19,7 +21,13 @@ public class LimitDetails {
     @NotNull
     Long window;
 
-    public String getKey() {
-        return this.id + "_limit";
+    public LimitDetails(HashMap<String, String> data) {
+        this.key = data.getOrDefault(LimitDetailsConstants.KEY, "");
+        this.window = Long.parseLong(data.getOrDefault(LimitDetailsConstants.WINDOW, "0"));
+        this.maxRequest = Long.parseLong(data.getOrDefault(LimitDetailsConstants.MAX_REQUEST, "0"));
+    }
+
+    public String getLimitKey() {
+        return this.key + "_limit";
     }
 }

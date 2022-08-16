@@ -1,7 +1,7 @@
 package com.rate.limiter.core.impl;
 
 import com.rate.limiter.core.inter.JedisService;
-import com.rate.limiter.utils.KeyDetailsConstants;
+import com.rate.limiter.utils.LimitDetailsConstants;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
