@@ -74,7 +74,7 @@ public abstract class AbstractRateLimiter {
    }
 
    /**
-    * This function can be called by all the child methods which inturns
+    * This function can be called by all the child methods which in turns
     * calculate the limit and returns the data
     * @param limitDetails
     * @return
@@ -83,7 +83,22 @@ public abstract class AbstractRateLimiter {
        return isLimitLeft(limitDetails);
    }
 
+   /**
+    * function to check data with stored details
+    * @param key
+    * @return
+    */
    public Boolean check(String key) {
       return isLimitLeft(key);
+   }
+
+   /**
+    * store and check this can be used to fill key details in data source if its not present
+    * @param keyDetails
+    * @return
+    */
+   public Boolean storeAndCheck(@Valid KeyDetails keyDetails) {
+      setKeyDetails(keyDetails);
+      return check(keyDetails.getKey());
    }
 }

@@ -18,4 +18,8 @@ public class LimitDetails {
 
     @NotNull
     Long window;
+
+    public String getKey() {
+        return this.id + "_limit";
+    }
 }

@@ -1,6 +1,7 @@
 package com.rate.limiter.core.impl;
 
 import com.rate.limiter.core.abst.AbstractRateLimiter;
+import com.rate.limiter.core.errors.ObjectNotFoundError;
 import com.rate.limiter.core.errors.UnProcessableError;
 import com.rate.limiter.model.dto.Configuration;
 import com.rate.limiter.model.dto.LimitDetails;
@@ -8,10 +9,7 @@ import com.rate.limiter.utils.LimitDetailsConstants;
 import com.rate.limiter.utils.LuaScripts;
 
 import javax.validation.Valid;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class SlidingWindowRateLimiter extends AbstractRateLimiter {
 
@@ -34,7 +32,7 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
             throw new UnProcessableError("large max request which should be less than " +
                     LimitDetailsConstants.MAX_REQUEST_SLIDING_WINDOW_LIMIT);
         }
-        List<String> keys = Collections.singletonList(limitDetails.getId());
+        List<String> keys = Collections.singletonList(limitDetails.getKey());
         long keyExpiry = (limitDetails.getWindow() / 1000) + 2;
         List<String> args = Arrays.asList(limitDetails.getMaxRequest().toString(),
                 limitDetails.getWindow().toString(), Long.toString(keyExpiry));
@@ -42,9 +40,19 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
         return resp.equals(LimitDetailsConstants.REDIS_LIMIT_SUCCESS);
     }
 
+    /**
+     * Sliding window with stored data
+     * @param key
+     * @return
+     */
     @Override
     protected Boolean isLimitLeft(String key) {
-        return null;
+        List<String> keys = Arrays.asList(key+"_limit", key);
+        String resp = getJedisService().runLua(LuaScripts.slidingRateLimiterWithStorage(), keys, new ArrayList<>());
+        if ("-1".equals(resp)) {
+            throw new ObjectNotFoundError(key + " missing");
+        }
+        return resp.equals(LimitDetailsConstants.REDIS_LIMIT_SUCCESS);
     }
 
     public static SlidingWindowRateLimiter getSlidingWindowRateLimiter(Configuration configuration) {
