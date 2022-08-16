@@ -1,6 +1,7 @@
 package com.rate.limiter.core.impl;
 
 import com.rate.limiter.core.inter.JedisService;
+import com.rate.limiter.utils.LimitDetailsConstants;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
@@ -60,6 +61,31 @@ public class JedisServiceImpl implements JedisService {
         if (data.equals(1L)) {
             jedis.expire(key, window/1000);
         }
+        jedis.close();
+        return data;
+    }
+
+    @Override
+    public void deleteKey(String key) {
+        Jedis jedis = getJedisPool().getResource();
+        jedis.select(redisDb);
+        jedis.del(key);
+        jedis.close();
+    }
+
+    @Override
+    public void hashSet(String key, HashMap<String, String> data) {
+        Jedis jedis = getJedisPool().getResource();
+        jedis.select(redisDb);
+        jedis.hmset(key, data);
+        jedis.close();
+    }
+
+    @Override
+    public HashMap<String, String> getHash(String key) {
+        Jedis jedis = getJedisPool().getResource();
+        jedis.select(redisDb);
+        HashMap<String, String> data = (HashMap<String, String>) jedis.hgetAll(key);
         jedis.close();
         return data;
     }
