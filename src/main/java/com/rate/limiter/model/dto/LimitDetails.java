@@ -4,7 +4,8 @@ import lombok.*;
 
 import javax.validation.constraints.NotNull;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -17,5 +18,4 @@ public class LimitDetails {
 
     @NotNull
     Long window;
-
 }

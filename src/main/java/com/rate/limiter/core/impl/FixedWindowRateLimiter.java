@@ -27,6 +27,11 @@ public class FixedWindowRateLimiter extends AbstractRateLimiter {
         return request <= limitDetails.getMaxRequest();
     }
 
+    @Override
+    protected Boolean isLimitLeft(String key) {
+        return null;
+    }
+
     public static FixedWindowRateLimiter getFixedWindowRateLimiter(Configuration configuration) {
         if (Objects.isNull(fixedWindowRateLimiter)) {
             synchronized(FixedWindowRateLimiter.class) {

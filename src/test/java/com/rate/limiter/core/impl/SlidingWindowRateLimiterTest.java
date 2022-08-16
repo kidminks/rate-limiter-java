@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 @Slf4j
 public class SlidingWindowRateLimiterTest {
 
-    private Configuration configuration = new Configuration("localhost",6379,1,150,50);
+    private Configuration configuration = new Configuration("localhost",6379,1,150,50, false);
 
     /**
      * Required local redis to test the flow completely

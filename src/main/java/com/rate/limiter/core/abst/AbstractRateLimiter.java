@@ -4,10 +4,13 @@ import com.rate.limiter.core.errors.ObjectNotFoundError;
 import com.rate.limiter.core.factory.JedisFactory;
 import com.rate.limiter.core.inter.JedisService;
 import com.rate.limiter.model.dto.Configuration;
+import com.rate.limiter.model.dto.KeyDetails;
 import com.rate.limiter.model.dto.LimitDetails;
+import com.rate.limiter.utils.KeyDetailsConstants;
 import redis.clients.jedis.JedisPoolConfig;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.Objects;
 
 public abstract class AbstractRateLimiter {
@@ -18,7 +21,11 @@ public abstract class AbstractRateLimiter {
     */
    protected abstract Boolean isLimitLeft(LimitDetails limitDetails);
 
+   protected abstract Boolean isLimitLeft(String key);
+
    private final JedisService jedisService;
+
+   private final Boolean withDataStorage;
 
    protected AbstractRateLimiter(Configuration configuration) {
       JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
@@ -26,6 +33,7 @@ public abstract class AbstractRateLimiter {
       jedisPoolConfig.setMaxIdle(configuration.getMaxIdle());
       this.jedisService = JedisFactory.getJedisService(configuration.getRedisHost(),
               configuration.getRedisPort(), configuration.getRedisDb(), jedisPoolConfig);
+      this.withDataStorage = configuration.getWithDataStorage();
    }
 
    protected JedisService getJedisService() {
@@ -36,6 +44,36 @@ public abstract class AbstractRateLimiter {
    }
 
    /**
+    * Setting key details in cache to be accessed later
+    * @param keyDetails
+    */
+   public void setKeyDetails(@Valid KeyDetails keyDetails) {
+      HashMap<String, String> data = new HashMap<>();
+      data.put(KeyDetailsConstants.KEY, keyDetails.getKey());
+      data.put(KeyDetailsConstants.WINDOW, Long.toString(keyDetails.getWindow()));
+      data.put(KeyDetailsConstants.MAX_REQUEST, Long.toString(keyDetails.getMaxRequest()));
+      getJedisService().hashSet(keyDetails.getKey(), data);
+   }
+
+   /**
+    * Get the key details
+    * @param key
+    * @return
+    */
+   public KeyDetails getKeyDetails(String key) {
+      HashMap<String, String> data = getJedisService().getHash(key);
+      return new KeyDetails(data);
+   }
+
+   /**
+    * Remove key manually in case of storage
+    * @param key
+    */
+   public  void removeKey(String key) {
+      getJedisService().deleteKey(key);
+   }
+
+   /**
     * This function can be called by all the child methods which inturns
     * calculate the limit and returns the data
     * @param limitDetails
@@ -43,5 +81,9 @@ public abstract class AbstractRateLimiter {
     */
    public Boolean check(@Valid LimitDetails limitDetails) {
        return isLimitLeft(limitDetails);
+   }
+
+   public Boolean check(String key) {
+      return isLimitLeft(key);
    }
 }

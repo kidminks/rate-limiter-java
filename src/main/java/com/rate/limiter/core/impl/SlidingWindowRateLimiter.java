@@ -42,6 +42,11 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
         return resp.equals(LimitDetailsConstants.REDIS_LIMIT_SUCCESS);
     }
 
+    @Override
+    protected Boolean isLimitLeft(String key) {
+        return null;
+    }
+
     public static SlidingWindowRateLimiter getSlidingWindowRateLimiter(Configuration configuration) {
         if (Objects.isNull(slidingWindowRateLimiter)) {
             synchronized(SlidingWindowRateLimiter.class) {

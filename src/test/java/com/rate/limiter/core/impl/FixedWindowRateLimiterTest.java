@@ -15,7 +15,8 @@ import java.util.concurrent.CompletableFuture;
 
 @Slf4j
 public class FixedWindowRateLimiterTest {
-    private Configuration configuration = new Configuration("localhost",6379,1,150,50);
+    private Configuration configuration = new Configuration("localhost",6379,1,
+            150,50,false);
 
     @Test
     public void testFixedWindowClass() {
