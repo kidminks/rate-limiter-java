@@ -24,15 +24,12 @@ public abstract class AbstractRateLimiter {
 
    private final JedisService jedisService;
 
-   private final Boolean withDataStorage;
-
    protected AbstractRateLimiter(Configuration configuration) {
       JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
       jedisPoolConfig.setMaxTotal(configuration.getMaxTotal());
       jedisPoolConfig.setMaxIdle(configuration.getMaxIdle());
       this.jedisService = JedisFactory.getJedisService(configuration.getRedisHost(),
               configuration.getRedisPort(), configuration.getRedisDb(), jedisPoolConfig);
-      this.withDataStorage = configuration.getWithDataStorage();
    }
 
    protected JedisService getJedisService() {

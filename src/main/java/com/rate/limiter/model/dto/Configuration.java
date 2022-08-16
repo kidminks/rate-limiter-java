@@ -13,6 +13,4 @@ public class Configuration {
     private Integer redisDb;
     private Integer maxTotal;
     private Integer maxIdle;
-
-    private Boolean withDataStorage = Boolean.TRUE;
 }

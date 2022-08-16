@@ -6,7 +6,6 @@ import com.rate.limiter.model.dto.Configuration;
 import com.rate.limiter.model.dto.LimitDetails;
 import com.rate.limiter.model.enums.RateLimiterType;
 import com.rate.limiter.utils.LimitDetailsConstants;
-import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -15,10 +14,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@Slf4j
 public class FixedWindowRateLimiterTest {
     private Configuration configuration = new Configuration("localhost",6379,1,
-            150,50,false);
+            150,50);
 
     @Test
     public void testFixedWindowClass() {
@@ -47,7 +45,7 @@ public class FixedWindowRateLimiterTest {
                     successCount += 1;
                 }
             } catch (Exception e) {
-                log.error(e.getLocalizedMessage());
+                e.printStackTrace();
             }
         }
         Assert.assertEquals(50, successCount);
@@ -91,7 +89,7 @@ public class FixedWindowRateLimiterTest {
                     successCount += 1;
                 }
             } catch (Exception e) {
-                log.error(e.getLocalizedMessage());
+                e.printStackTrace();
             }
         }
         Assert.assertEquals(50, successCount);
