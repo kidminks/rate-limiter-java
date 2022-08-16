@@ -17,7 +17,7 @@ public interface LuaScripts {
 
     static String slidingRateLimiterWithStorage() {
         return  "            local key_data = redis.call('HMGET', KEYS[2], 'window', 'max_request')\n" +
-                "            if(key_data[1] == nil || key_data[2] == nil) return -1\n" +
+                "            if key_data[1] == nil or key_data[2] == nil then\n return -1\nend\n" +
                 "            local current_time = redis.call('TIME')\n" +
                 "            local trim_time = tonumber(current_time[1]) - tonumber(key_data[1])\n" +
                 "            redis.call('ZREMRANGEBYSCORE', KEYS[1], 0, trim_time)\n" +
@@ -33,7 +33,7 @@ public interface LuaScripts {
 
     static String fixedRateLimiterWithStorage() {
         return  "            local key_data = redis.call('HMGET', KEYS[2], 'window', 'max_request')\n" +
-                "            if(key_data[1] == nil || key_data[2] == nil) then\n return -1\nend\n" +
+                "            if key_data[1] == nil or key_data[2] == nil then\n return -1\nend\n" +
                 "            local request_count = redis.call('INCR', KEYS[1])\n" +
                 "            if request_count <= tonumber(key_data[2]) then\n" +
                 "                if(request_count == 1) then\nredis.call('EXPIRE', KEYS[1], key_data[2])\nend\n"+
