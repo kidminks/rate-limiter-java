@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class SlidingWindowRateLimiterTest {
 
-    private Configuration configuration = new Configuration("localhost",6379,1,150,50);
+    private Configuration configuration = new Configuration("localhost",6379,1,150,50, true);
 
     /**
      * Required local redis to test the flow completely

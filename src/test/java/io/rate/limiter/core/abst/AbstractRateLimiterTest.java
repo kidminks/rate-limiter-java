@@ -12,7 +12,7 @@ import org.junit.Test;
 import java.util.HashMap;
 
 public class AbstractRateLimiterTest {
-    private Configuration configuration = new Configuration("localhost",6379,1,150,50);
+    private Configuration configuration = new Configuration("localhost",6379,1,150,50,true);
 
     @Test
     public void limitDetailsInCache() {

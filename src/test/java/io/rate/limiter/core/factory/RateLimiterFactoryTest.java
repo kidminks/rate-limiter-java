@@ -11,7 +11,7 @@ import org.junit.Test;
 
 public class RateLimiterFactoryTest {
 
-    private Configuration configuration = new Configuration("localhost",6379,1,150,50);
+    private Configuration configuration = new Configuration("localhost",6379,1,150,50,true);
 
     @Test
     public void testRateLimiterFactory() {

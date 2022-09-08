@@ -16,7 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class FixedWindowRateLimiterTest {
     private Configuration configuration = new Configuration("localhost",6379,1,
-            150,50);
+            150,50,true);
 
     @Test
     public void testFixedWindowClass() {

@@ -1,5 +1,6 @@
 package io.github.kidminks.rate.limiter.core.abst;
 
+import io.github.kidminks.rate.limiter.core.errors.UnImplementedError;
 import io.github.kidminks.rate.limiter.model.dto.Configuration;
 import io.github.kidminks.rate.limiter.core.errors.ObjectNotFoundError;
 import io.github.kidminks.rate.limiter.core.factory.JedisFactory;
@@ -24,10 +25,13 @@ public abstract class AbstractRateLimiter {
 
    private final JedisService jedisService;
 
+   private final Boolean useLuaScript;
+
    protected AbstractRateLimiter(Configuration configuration) {
       JedisPoolConfig jedisPoolConfig = new JedisPoolConfig();
       jedisPoolConfig.setMaxTotal(configuration.getMaxTotal());
       jedisPoolConfig.setMaxIdle(configuration.getMaxIdle());
+      this.useLuaScript = configuration.getUseLuaScript();
       this.jedisService = JedisFactory.getJedisService(configuration.getRedisHost(),
               configuration.getRedisPort(), configuration.getRedisDb(), jedisPoolConfig);
    }
@@ -85,6 +89,9 @@ public abstract class AbstractRateLimiter {
     * @return
     */
    public Boolean check(String key) {
+      if (Boolean.FALSE.equals(this.useLuaScript)) {
+         throw new UnImplementedError("check stored data without lua script");
+      }
       return isLimitLeft(key);
    }
 
