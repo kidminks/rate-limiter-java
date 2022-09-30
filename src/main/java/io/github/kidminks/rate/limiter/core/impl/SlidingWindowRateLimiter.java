@@ -7,6 +7,7 @@ import io.github.kidminks.rate.limiter.model.dto.Configuration;
 import io.github.kidminks.rate.limiter.model.dto.LimitDetails;
 import io.github.kidminks.rate.limiter.utils.LimitDetailsConstants;
 import io.github.kidminks.rate.limiter.utils.LuaScripts;
+import redis.clients.jedis.Jedis;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -34,6 +35,11 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
         }
         List<String> keys = Collections.singletonList(limitDetails.getLimitKey());
         long keyExpiry = (limitDetails.getWindow() / 1000) + 2;
+
+        Map<String, List<Object>> pipelineFunction = new HashMap<>();
+        pipelineFunction.put("zRemByScorePipeline", null);
+        pipelineFunction.put("zCard", null);
+        List<Object> response = getJedisService().runPipeline(pipelineFunction);
         List<String> args = Arrays.asList(limitDetails.getMaxRequest().toString(),
                 limitDetails.getWindow().toString(), Long.toString(keyExpiry));
         String resp = getJedisService().runLua(LuaScripts.slidingRateLimiter(), keys, args);

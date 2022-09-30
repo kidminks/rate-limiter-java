@@ -1,13 +1,13 @@
 package io.github.kidminks.rate.limiter.core.impl;
 
+import io.github.kidminks.rate.limiter.core.errors.UnImplementedError;
 import io.github.kidminks.rate.limiter.core.inter.JedisService;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.JedisPoolConfig;
+import redis.clients.jedis.Pipeline;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 public class JedisServiceImpl implements JedisService {
 
@@ -87,5 +87,37 @@ public class JedisServiceImpl implements JedisService {
         HashMap<String, String> data = (HashMap<String, String>) jedis.hgetAll(key);
         jedis.close();
         return data;
+    }
+
+    @Override
+    public void zRemByScorePipeline(Pipeline pipeline, String key, Double min, Double max) {
+        pipeline.zremrangeByScore(key, min, max);
+    }
+
+    @Override
+    public void zCard(Pipeline pipeline, String key) {
+        pipeline.zcard(key);
+    }
+
+    @Override
+    public List<Object> runPipeline(Map<String, List<Object>> pipelineFunction) {
+        Jedis jedis = getJedisPool().getResource();
+        Pipeline pipeline = jedis.pipelined();
+        for (Map.Entry<String, List<Object>> func : pipelineFunction.entrySet()) {
+            switch (func.getKey()) {
+                case "zRemByScorePipeline": {
+                    List<Object> args = func.getValue();
+                    zRemByScorePipeline(pipeline, args.get(0).toString(),
+                            Double.parseDouble(args.get(1).toString()), Double.parseDouble(args.get(2).toString()));
+                } break;
+                case "zCard": {
+                    List<Object> args = func.getValue();
+                    zCard(pipeline, args.get(0).toString());
+                } break;
+                default: throw new UnImplementedError("function not implemented");
+            }
+        }
+        jedis.close();
+        return pipeline.syncAndReturnAll();
     }
 }
