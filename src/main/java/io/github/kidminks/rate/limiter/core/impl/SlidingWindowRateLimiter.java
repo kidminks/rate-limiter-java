@@ -7,7 +7,6 @@ import io.github.kidminks.rate.limiter.model.dto.Configuration;
 import io.github.kidminks.rate.limiter.model.dto.LimitDetails;
 import io.github.kidminks.rate.limiter.utils.LimitDetailsConstants;
 import io.github.kidminks.rate.limiter.utils.LuaScripts;
-import redis.clients.jedis.Jedis;
 
 import javax.validation.Valid;
 import java.util.*;
@@ -33,17 +32,22 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
             throw new UnProcessableError("large max request which should be less than " +
                     LimitDetailsConstants.MAX_REQUEST_SLIDING_WINDOW_LIMIT);
         }
-        List<String> keys = Collections.singletonList(limitDetails.getLimitKey());
         long keyExpiry = (limitDetails.getWindow() / 1000) + 2;
-
+        String key = limitDetails.getLimitKey();
+        Long time = new Date().getTime();
+        Long upperScore = time - limitDetails.getWindow();
         Map<String, List<Object>> pipelineFunction = new HashMap<>();
-        pipelineFunction.put("zRemByScorePipeline", null);
-        pipelineFunction.put("zCard", null);
+        pipelineFunction.put("zRemByScorePipeline", Arrays.asList(key, 0, upperScore));
+        pipelineFunction.put("zCard", Collections.singletonList(key));
         List<Object> response = getJedisService().runPipeline(pipelineFunction);
-        List<String> args = Arrays.asList(limitDetails.getMaxRequest().toString(),
-                limitDetails.getWindow().toString(), Long.toString(keyExpiry));
-        String resp = getJedisService().runLua(LuaScripts.slidingRateLimiter(), keys, args);
-        return resp.equals(LimitDetailsConstants.REDIS_LIMIT_SUCCESS);
+        if (Long.parseLong(response.get(1).toString()) < limitDetails.getMaxRequest()) {
+            pipelineFunction = new HashMap<>();
+            pipelineFunction.put("zAdd", Arrays.asList(key,time/1000,time.toString()));
+            pipelineFunction.put("expire", Arrays.asList(key, keyExpiry));
+            getJedisService().runPipeline(pipelineFunction);
+            return true;
+        }
+        return false;
     }
 
     /**
