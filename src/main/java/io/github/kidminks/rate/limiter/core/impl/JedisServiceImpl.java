@@ -100,6 +100,16 @@ public class JedisServiceImpl implements JedisService {
     }
 
     @Override
+    public void zAdd(Pipeline pipeline, String key, Double score, String value) {
+        pipeline.zadd(key, score, value);
+    }
+
+    @Override
+    public void expire(Pipeline pipeline, String key, Long after) {
+        pipeline.expire(key, after);
+    }
+
+    @Override
     public List<Object> runPipeline(Map<String, List<Object>> pipelineFunction) {
         Jedis jedis = getJedisPool().getResource();
         Pipeline pipeline = jedis.pipelined();
@@ -113,6 +123,15 @@ public class JedisServiceImpl implements JedisService {
                 case "zCard": {
                     List<Object> args = func.getValue();
                     zCard(pipeline, args.get(0).toString());
+                } break;
+                case "zAdd": {
+                    List<Object> args = func.getValue();
+                    zAdd(pipeline, args.get(0).toString(),
+                            Double.parseDouble(args.get(1).toString()), args.get(2).toString());
+                } break;
+                case "expire": {
+                    List<Object> args = func.getValue();
+                    expire(pipeline, args.get(0).toString(), Long.parseLong(args.get(1).toString()));
                 } break;
                 default: throw new UnImplementedError("function not implemented");
             }

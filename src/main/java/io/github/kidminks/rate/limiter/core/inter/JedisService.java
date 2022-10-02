@@ -14,5 +14,7 @@ public interface JedisService {
     HashMap<String, String> getHash(String key);
     void zRemByScorePipeline(Pipeline pipeline, String key, Double min, Double max);
     void zCard(Pipeline pipeline, String key);
+    void zAdd(Pipeline pipeline, String key, Double score, String value);
+    void expire(Pipeline pipeline, String key, Long after);
     List<Object> runPipeline(Map<String, List<Object>> pipelineFunction);
 }
