@@ -160,6 +160,14 @@ public class RateLimiterTestController {
 }
 ```
 
+### Roadmap
+
+|         **Feature**         | **Status** |
+|:---------------------------:|:----------:|
+| Sliding Window rate limiter | Released   |
+| Fixed Window rate limiter   | Released   |
+| Store user data             | Ongoing    |
+
 
 
 
