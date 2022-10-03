@@ -2,6 +2,7 @@ package io.github.kidminks.rate.limiter.core.impl;
 
 import io.github.kidminks.rate.limiter.core.abst.AbstractRateLimiter;
 import io.github.kidminks.rate.limiter.core.errors.ObjectNotFoundError;
+import io.github.kidminks.rate.limiter.core.errors.UnImplementedError;
 import io.github.kidminks.rate.limiter.core.errors.UnProcessableError;
 import io.github.kidminks.rate.limiter.model.dto.Configuration;
 import io.github.kidminks.rate.limiter.model.dto.LimitDetails;
@@ -15,8 +16,12 @@ public class SlidingWindowRateLimiter extends AbstractRateLimiter {
 
     private static SlidingWindowRateLimiter slidingWindowRateLimiter;
 
+
     private SlidingWindowRateLimiter(Configuration configuration) {
         super(configuration);
+        if (Boolean.FALSE.equals(configuration.getUseLuaScript())) {
+            throw new UnImplementedError("Lua script is necessary for sliding window");
+        }
     }
 
     /**
