@@ -1,6 +1,5 @@
 # Rate Limiter Java Library
 
----
 
 A Java library for rate limiting, assembled using extensible storage 
 and application framework adaptors. 
@@ -89,7 +88,7 @@ public class RateLimiterService {
                 .redisDb(1)
                 .maxTotal(10)
                 .maxIdle(1)
-                .useLuaScript(true)
+                .useLuaScript(false)
                 .build();
         this.fixedWindowRateLimiter = RateLimiterFactory.getRateLimiter(configuration, RateLimiterType.FIXED_WINDOW);
     }
