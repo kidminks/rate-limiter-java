@@ -4,9 +4,23 @@
 
     <groupId>io.github.kidminks</groupId>
     <artifactId>rate-limiter-java</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>Rate Limiter Java</name>
+    <description>
+        A Java library for rate limiting, assembled using extensible storage and application
+        framework adaptors. The library's interfaces support thread-safe sync, async, and reactive usage patterns.
+    </description>
+    <url>https://github.com/kidminks/rate-limiter-java</url>
+
+    <developers>
+        <developer>
+            <name>Mayank Kumar</name>
+            <email>mayankk.co@nsit.net.in</email>
+            <organization>kidminks</organization>
+            <organizationUrl>https://github.com/kidminks</organizationUrl>
+        </developer>
+    </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -26,11 +40,13 @@
     </distributionManagement>
 
     <scm>
+        <url>https://github.com/kidminks/rate-limiter-java/tree/main</url>
+        <connection>scm:git:git://github.com/kidminks/rate-limiter-java.git</connection>
         <developerConnection>
             scm:git:git@github.com:kidminks/rate-limiter-java.git
         </developerConnection>
-      <tag>rate-limiter-java-0.0.1</tag>
-  </scm>
+        <tag>rate-limiter-java-0.0.1</tag>
+    </scm>
 
     <dependencies>
         <dependency>
@@ -142,6 +158,20 @@
                         <releaseProfiles>release</releaseProfiles>
                         <goals>deploy</goals>
                     </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>1.5</version>
+                    <executions>
+                        <execution>
+                            <id>sign-artifacts</id>
+                            <phase>verify</phase>
+                            <goals>
+                                <goal>sign</goal>
+                            </goals>
+                        </execution>
+                    </executions>
                 </plugin>
             </plugins>
         </pluginManagement>
