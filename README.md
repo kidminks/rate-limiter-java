@@ -27,10 +27,8 @@ Add the dependency to your pom.xml file
 ```xml
 <dependency>
     <groupId>io.github.kidminks</groupId>
-	<artifactId>rate-limiter-java</artifactId>
-	<version>0.0.1</version>
-	<scope>system</scope>
-	<systemPath>${project.basedir}/src/main/resources/rate-limiter-java-0.0.1.jar</systemPath>
+    <artifactId>rate-limiter-java</artifactId>
+    <version>0.0.1</version>
 </dependency>
 ```
 
