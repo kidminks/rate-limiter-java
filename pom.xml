@@ -4,7 +4,7 @@
 
     <groupId>io.github.kidminks</groupId>
     <artifactId>rate-limiter-java</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>Rate Limiter Java</name>
     <description>
@@ -164,8 +164,8 @@
                                 <goal>sign</goal>
                             </goals>
                             <configuration>
-                                <keyname>${gpg.keyname}</keyname>
-                                <passphraseServerId>${gpg.keyname}</passphraseServerId>
+                                <keyname>0xC4AA7D94</keyname>
+                                <passphraseServerId>0xC4AA7D94</passphraseServerId>
                             </configuration>
                         </execution>
                     </executions>
