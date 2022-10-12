@@ -4,7 +4,7 @@
 
     <groupId>io.github.kidminks</groupId>
     <artifactId>rate-limiter-java</artifactId>
-    <version>0.0.2-SNAPSHOT</version>
+    <version>0.0.1</version>
 
     <name>Rate Limiter Java</name>
     <description>
@@ -36,7 +36,7 @@
         </snapshotRepository>
         <repository>
             <id>ossrh</id>
-            <url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+            <url>https://s01.oss.sonatype.org/content/repositories/releases</url>
         </repository>
     </distributionManagement>
 
@@ -46,7 +46,7 @@
         <developerConnection>
             scm:git:git@github.com:kidminks/rate-limiter-java.git
         </developerConnection>
-        <tag>rate-limiter-java-0.0.2</tag>
+        <tag>rate-limiter-java-0.0.1</tag>
     </scm>
 
     <dependencies>
